@@ -27,7 +27,85 @@ body{
   overflow-x:hidden
 }
 
-/* CENÁRIO */
+/* =================================
+   PRIMEIRA TELA - ABERTURA
+================================= */
+
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  background-image:url("./entrada.png");
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .9s ease, visibility .9s ease;
+}
+
+/* Área clicável sobre o botão da imagem */
+.open-button{
+  position:absolute;
+  left:50%;
+  top:66%;
+  transform:translate(-50%,-50%);
+  width:min(34vw,560px);
+  height:9vh;
+  border:0;
+  border-radius:30px;
+  background:transparent;
+  cursor:pointer;
+  z-index:2;
+  outline-offset:5px;
+}
+
+/* Brilho suave ao redor do livro */
+.book-glow{
+  position:absolute;
+  left:50%;
+  top:32%;
+  width:190px;
+  height:190px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(
+    circle,
+    rgba(255,139,215,.12),
+    transparent 70%
+  );
+  animation:bookGlow 2.8s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes bookGlow{
+  0%,100%{
+    opacity:.55;
+    transform:translate(-50%,-50%) scale(.9);
+  }
+  50%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.12);
+  }
+}
+
+/* Quando abrir a surpresa */
+body.opened #intro{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+body:not(.opened) .scene,
+body:not(.opened) main,
+body:not(.opened) .music-button{
+  display:none;
+}
+
+/* =================================
+   SEGUNDA TELA - CARTA
+================================= */
+
 .scene{
   position:fixed;
   inset:0;
@@ -51,7 +129,6 @@ body{
   );
 }
 
-/* CARTA */
 main{
   position:relative;
   z-index:2;
@@ -59,7 +136,19 @@ main{
   display:flex;
   align-items:center;
   justify-content:flex-end;
-  padding:clamp(16px,4vw,56px)
+  padding:clamp(16px,4vw,56px);
+  animation:showLetter 1.1s ease both;
+}
+
+@keyframes showLetter{
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 .letter{
@@ -84,8 +173,7 @@ h1{
 
 .kicker{
   font:12px/1.4 system-ui,sans-serif;
-  letter-spacing:.18em;
-  text-transform:uppercase;
+  letter-spacing:.12em;
   color:#ffc4eb
 }
 
@@ -96,7 +184,10 @@ p{white-space:pre-wrap}
   font-style:italic
 }
 
-/* BOTÃO DA MÚSICA */
+/* =================================
+   BOTÃO DA MÚSICA
+================================= */
+
 .music-button{
   position:fixed;
   z-index:9999;
@@ -123,18 +214,42 @@ p{white-space:pre-wrap}
   transform:scale(.97);
 }
 
-/* CELULAR */
+/* =================================
+   CELULAR
+================================= */
+
 @media(max-width:700px){
+
+  #intro{
+    background-position:center center;
+  }
+
+  .open-button{
+    width:58vw;
+    height:8vh;
+    top:66%;
+  }
+
+  .book-glow{
+    width:150px;
+    height:150px;
+    top:32%;
+  }
+
   main{
     justify-content:center;
     align-items:flex-end;
     padding:12px;
-    padding-bottom:100px
+    padding-bottom:100px;
   }
 
-  .letter{max-height:65vh}
+  .letter{
+    max-height:65vh;
+  }
 
-  .scene{background-position:58% center}
+  .scene{
+    background-position:58% center;
+  }
 
   .music-button{
     left:16px;
@@ -149,12 +264,28 @@ p{white-space:pre-wrap}
 
 <body>
 
+<!-- PRIMEIRA TELA -->
+<section id="intro" aria-label="Tela de abertura">
+  <div class="book-glow"></div>
+
+  <button
+    class="open-button"
+    id="openLetterButton"
+    type="button"
+    aria-label="Abrir minha surpresa"
+    title="Abrir minha surpresa">
+  </button>
+</section>
+
+<!-- SEGUNDA TELA -->
 <div class="scene" aria-hidden="true"></div>
 
 <main>
 <section class="letter">
 
-<div class="kicker">Entre infinitas seeds e mundos possíveis, o mais raro de encontrar sempre será você.</div>
+<div class="kicker">
+Entre infinitas seeds e mundos possíveis, o mais raro de encontrar sempre será você.
+</div>
 
 <h1>Feliz aniversário, Júlio! ♡</h1>
 
@@ -182,25 +313,46 @@ Se a vida fosse um mundo de Minecraft, com infinitas seeds e possibilidades de g
 
 Que esse novo capítulo seja cheio de experiências inesquecíveis, novas descobertas e momentos que façam seu coração ficar quentinho. Que você seja feliz não somente hoje, mas em todos os dias que ainda estão por vir.
 
-Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vida. Eu espero que você receba todo o carinho que merece hoje e sempre.
-</p>
+Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vida. Eu espero que você receba todo o carinho que merece hoje e sempre.</p>
 
 <p class="signature">Com todo meu amor. ♡</p>
 
 </section>
 </main>
 
-<!-- MÚSICA ESCOLHIDA POR VOCÊ -->
-<audio id="musicPlayer" src="./music.mp3" loop preload="auto"></audio>
+<!-- MÚSICA -->
+<audio
+  id="musicPlayer"
+  src="./music.mp3"
+  loop
+  preload="auto">
+</audio>
 
-<button class="music-button" id="musicButton" type="button">
+<button
+  class="music-button"
+  id="musicButton"
+  type="button">
   ♫ Tocar nossa música
 </button>
 
 <script>
-const musicPlayer=document.getElementById('musicPlayer');
-const musicButton=document.getElementById('musicButton');
-musicPlayer.volume = 0.25;
+
+/* ABRIR A CARTA */
+const openLetterButton =
+  document.getElementById('openLetterButton');
+
+openLetterButton.addEventListener('click',()=>{
+  document.body.classList.add('opened');
+});
+
+/* MÚSICA */
+const musicPlayer =
+  document.getElementById('musicPlayer');
+
+const musicButton =
+  document.getElementById('musicButton');
+
+musicPlayer.volume=0.25;
 
 musicButton.addEventListener('click',async()=>{
   if(musicPlayer.paused){
@@ -219,6 +371,7 @@ musicButton.addEventListener('click',async()=>{
 musicPlayer.addEventListener('ended',()=>{
   musicButton.textContent='♫ Tocar nossa música';
 });
+
 </script>
 
 </body>
