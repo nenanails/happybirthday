@@ -72,6 +72,38 @@ body{
   animation:magiaLivro 3s ease-in-out infinite;
 }
 
+/* LIVRO FLUTUANDO */
+
+.floating-book{
+  position:absolute;
+  z-index:2;
+
+  width:clamp(120px, 17vw, 220px);
+  height:auto;
+
+  left:50%;
+  top:42%;
+
+  object-fit:contain;
+  pointer-events:none;
+
+  filter:
+    drop-shadow(0 0 10px rgba(255,190,245,.8))
+    drop-shadow(0 0 22px rgba(190,130,255,.55));
+
+  animation:livroFlutuando 3.5s ease-in-out infinite;
+}
+
+@keyframes livroFlutuando{
+  0%,100%{
+    transform:translate(-50%,-50%) translateY(0) rotate(-3deg);
+  }
+
+  50%{
+    transform:translate(-50%,-50%) translateY(-16px) rotate(3deg);
+  }
+}
+
 /* Pequenos pontos de luz */
 
 .book-glow::before,
@@ -318,6 +350,11 @@ p{white-space:pre-wrap}
     width:150px;
     height:150px;
     top:32%;
+    
+  .floating-book{
+  width:120px;
+  top:32%;
+}
   }
 
   .continue-text{
@@ -354,10 +391,15 @@ p{white-space:pre-wrap}
 <body>
 
 <!-- PRIMEIRA TELA -->
-
+  
 <section id="intro" aria-label="Tela de abertura">
 
   <div class="book-glow"></div>
+
+  <img
+    src="./livroo.png"
+    class="floating-book"
+    alt="Livro encantado">
 
   <button
     class="open-button"
