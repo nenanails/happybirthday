@@ -1,40 +1,199 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Happy Birthday </title>
+<title>Happy Birthday</title>
+
 <style>
 :root{--panel:rgba(7,13,30,.72);--accent:#ff8bd7;--text:#fff}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Georgia,serif;color:var(--text)}
-body{background:#071326;overflow-x:hidden}
-.scene{position:fixed;z-inset:0;z-index:0;background: url("fundo.gif") center center/cover no-repeat:}
-.scene:after{content:"";position:absolute;inset:0;z-index:1:background:linear-gradient(90deg,rgba(3,8,22,.18),rgba(3,8,22,.08) 50%,rgba(3,8,22,.24));}
-main{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:flex-start;padding:clamp(16px,4vw,56px)}
-.letter{width:min(520px,100%);max-height:86vh;overflow:auto;background:var(--panel);border:1px solid rgba(255,255,255,.26);border-radius:18px;padding:clamp(22px,3vw,34px);box-shadow:0 16px 60px #0008;backdrop-filter:blur(5px);line-height:1.7}
-h1{font-size:clamp(27px,4vw,38px);line-height:1.12;margin:0 0 8px;color:#ffd9f3}
-.kicker{font:12px/1.4 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#ffc4eb}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Georgia,serif;
+  color:var(--text)
+}
+
+body{
+  background:#071326;
+  overflow-x:hidden
+}
+
+/* CENÁRIO E GIF */
+.scene{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background-image:url("./fundo.gif");
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+
+.scene:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(
+    90deg,
+    rgba(3,8,22,.18),
+    rgba(3,8,22,.08) 50%,
+    rgba(3,8,22,.24)
+  );
+}
+
+/* CARTA */
+main{
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:clamp(16px,4vw,56px)
+}
+
+.letter{
+  width:min(520px,100%);
+  max-height:86vh;
+  overflow:auto;
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.26);
+  border-radius:18px;
+  padding:clamp(22px,3vw,34px);
+  box-shadow:0 16px 60px #0008;
+  backdrop-filter:blur(5px);
+  line-height:1.7
+}
+
+h1{
+  font-size:clamp(27px,4vw,38px);
+  line-height:1.12;
+  margin:0 0 8px;
+  color:#ffd9f3
+}
+
+.kicker{
+  font:12px/1.4 system-ui,sans-serif;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#ffc4eb
+}
+
 p{white-space:pre-wrap}
-.signature{color:#ffd9f3;font-style:italic}
-.tools{position:fixed;z-index:3;left:14px;bottom:14px;max-width:min(330px,calc(100vw - 28px));background:rgba(4,10,24,.8);border:1px solid #ffffff35;border-radius:14px;padding:12px;color:white;font:13px system-ui,sans-serif;backdrop-filter:blur(8px)}
-.tools summary{cursor:pointer;font-weight:700}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-label{display:flex;flex-direction:column;gap:4px;color:#f7e9f4}
-input,textarea{max-width:100%;font:inherit}
-input[type=color]{width:100%;height:30px;border:0;background:transparent}
-textarea{width:100%;min-height:85px;margin-top:8px;border-radius:8px;padding:8px;background:#101b31;color:white;border:1px solid #ffffff40}
-.audio{display:block;margin-top:8px;width:100%;font-size:11px}
-.hint{font:11px/1.45 system-ui,sans-serif;color:#e7dce9;margin-top:8px}
-@media(max-width:700px){main{justify-content:center;align-items:flex-end;padding:12px;padding-bottom:145px}.letter{max-height:65vh}.tools{max-height:120px;overflow:auto}.scene{background-position:58% center}}
+
+.signature{
+  color:#ffd9f3;
+  font-style:italic
+}
+
+/* CONTROLES */
+.tools{
+  position:fixed;
+  z-index:3;
+  left:14px;
+  bottom:14px;
+  max-width:min(330px,calc(100vw - 28px));
+  background:rgba(4,10,24,.8);
+  border:1px solid #ffffff35;
+  border-radius:14px;
+  padding:12px;
+  color:white;
+  font:13px system-ui,sans-serif;
+  backdrop-filter:blur(8px)
+}
+
+.tools summary{
+  cursor:pointer;
+  font-weight:700
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px
+}
+
+label{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  color:#f7e9f4
+}
+
+input,textarea{
+  max-width:100%;
+  font:inherit
+}
+
+input[type=color]{
+  width:100%;
+  height:30px;
+  border:0;
+  background:transparent
+}
+
+textarea{
+  width:100%;
+  min-height:85px;
+  margin-top:8px;
+  border-radius:8px;
+  padding:8px;
+  background:#101b31;
+  color:white;
+  border:1px solid #ffffff40
+}
+
+.audio{
+  display:block;
+  margin-top:8px;
+  width:100%;
+  font-size:11px
+}
+
+.hint{
+  font:11px/1.45 system-ui,sans-serif;
+  color:#e7dce9;
+  margin-top:8px
+}
+
+/* CELULAR */
+@media(max-width:700px){
+  main{
+    justify-content:center;
+    align-items:flex-end;
+    padding:12px;
+    padding-bottom:145px
+  }
+
+  .letter{max-height:65vh}
+
+  .tools{
+    max-height:120px;
+    overflow:auto
+  }
+
+  .scene{background-position:58% center}
+}
 </style>
 </head>
+
 <body>
+
 <div class="scene" aria-hidden="true"></div>
+
 <main>
 <section class="letter">
+
 <div class="kicker">um pedacinho do nosso mundo</div>
+
 <h1>Feliz aniversário, Júlio! ♡</h1>
+
 <p id="letterText">Hoje é o seu dia, e eu espero que você consiga sentir o quanto é especial e amado. Que esse novo ciclo traga momentos leves, conquistas, saúde e muitos motivos para sorrir.
 
 Sou grata por cada momento que compartilhamos, pelas risadas, pelas conversas, pelas brincadeiras, pelos carinhos e até pelas pequenas coisas do nosso dia a dia que, talvez, você nem perceba, mas que significam muito para mim.
@@ -45,34 +204,89 @@ Que a vida seja gentil com você. Eu torço muito pela sua felicidade e por todo
 
 Com carinho,
 </p>
+
 <p class="signature">Com todo meu amor. ♡</p>
+
 </section>
 </main>
+
 <details class="tools">
+
 <summary>Personalizar nosso cantinho</summary>
-<div class="hint">As roupas dos personagens no fundo já estão brancas. Aqui você pode ajustar o tom de cor da página e trocar os áudios.</div>
-<div class="controls">
-<label>Cor dos detalhes<input type="color" value="#ff8bd7" id="accent"></label>
-<label>Fundo do texto<input type="color" value="#071326" id="panel"></label>
+
+<div class="hint">
+As roupas dos personagens no fundo já estão brancas. Aqui você pode ajustar o tom de cor da página e trocar os áudios.
 </div>
-<label style="display:block;margin-top:9px">Editar a cartinha<textarea id="editor"></textarea></label>
-<label class="audio">Sua narração (áudio)<input type="file" id="voice" accept="audio/*"></label>
-<label class="audio">Música de fundo<input type="file" id="music" accept="audio/*"></label>
-<div class="hint">Os áudios escolhidos aqui tocam neste navegador. Para o site publicado, inclua os arquivos de áudio junto do HTML no GitHub.</div>
+
+<div class="controls">
+<label>Cor dos detalhes
+<input type="color" value="#ff8bd7" id="accent">
+</label>
+
+<label>Fundo do texto
+<input type="color" value="#071326" id="panel">
+</label>
+</div>
+
+<label style="display:block;margin-top:9px">
+Editar a cartinha
+<textarea id="editor"></textarea>
+</label>
+
+<label class="audio">Sua narração (áudio)
+<input type="file" id="voice" accept="audio/*">
+</label>
+
+<label class="audio">Música de fundo
+<input type="file" id="music" accept="audio/*">
+</label>
+
+<div class="hint">
+Os áudios escolhidos aqui tocam neste navegador. Para o site publicado, inclua os arquivos de áudio junto do HTML no GitHub.
+</div>
+
 </details>
+
 <audio id="voicePlayer" controls hidden></audio>
 <audio id="musicPlayer" loop></audio>
+
 <script>
 const editor=document.getElementById('editor');
+
 editor.value=document.getElementById('letterText').innerText;
-editor.addEventListener('input',()=>document.getElementById('letterText').innerText=editor.value);
-document.getElementById('accent').addEventListener('input',e=>document.documentElement.style.setProperty('--accent',e.target.value));
-document.getElementById('panel').addEventListener('input',e=>document.documentElement.style.setProperty('--panel',e.target.value+'bb'));
+
+editor.addEventListener('input',()=>{
+  document.getElementById('letterText').innerText=editor.value;
+});
+
+document.getElementById('accent').addEventListener('input',e=>{
+  document.documentElement.style.setProperty('--accent',e.target.value);
+});
+
+document.getElementById('panel').addEventListener('input',e=>{
+  document.documentElement.style.setProperty('--panel',e.target.value+'bb');
+});
+
 function loadAudio(inputId,playerId,showControls){
- const input=document.getElementById(inputId), player=document.getElementById(playerId);
- input.addEventListener('change',()=>{if(input.files[0]){player.src=URL.createObjectURL(input.files[0]);player.hidden=!showControls;player.controls=showControls;if(inputId==='music')player.play().catch(()=>{});}});
+  const input=document.getElementById(inputId);
+  const player=document.getElementById(playerId);
+
+  input.addEventListener('change',()=>{
+    if(input.files[0]){
+      player.src=URL.createObjectURL(input.files[0]);
+      player.hidden=!showControls;
+      player.controls=showControls;
+
+      if(inputId==='music'){
+        player.play().catch(()=>{});
+      }
+    }
+  });
 }
-loadAudio('voice','voicePlayer',true);loadAudio('music','musicPlayer',false);
+
+loadAudio('voice','voicePlayer',true);
+loadAudio('music','musicPlayer',false);
 </script>
+
 </body>
 </html>
