@@ -42,7 +42,7 @@ body{
   background-repeat:no-repeat;
   opacity:1;
   visibility:visible;
-  transition:opacity .9s ease, visibility .9s ease;
+  transition:opacity 1.2s ease, visibility 1.2s ease;
 }
 
 /* BRILHO MÁGICO AO REDOR DO LIVRO */
@@ -147,69 +147,84 @@ body{
 }
 
 /* =================================
-   TRANSIÇÃO MÁGICA
+   TRANSIÇÃO MÁGICA SUAVE
 ================================= */
 
 .magic-flash{
   position:absolute;
-  inset:0;
+  inset:-30%;
   z-index:8;
   pointer-events:none;
   opacity:0;
-  transform:scale(.05);
 
-  background:radial-gradient(
-    circle at 50% 42%,
-    rgba(255,255,255,1) 0%,
-    rgba(255,210,247,.95) 12%,
-    rgba(255,139,215,.8) 28%,
-    rgba(190,130,255,.65) 48%,
-    rgba(90,70,160,.25) 70%,
-    transparent 100%
-  );
+  background:
+    radial-gradient(
+      ellipse at 50% 42%,
+      rgba(255,245,255,.65) 0%,
+      rgba(255,190,235,.38) 18%,
+      rgba(225,155,255,.22) 38%,
+      rgba(180,130,255,.10) 58%,
+      transparent 76%
+    );
+
+  filter:blur(55px);
+  mix-blend-mode:screen;
+  transform:scale(.85);
 }
 
 body.magic-transition .magic-flash{
-  animation:ondaMagica 1.5s ease-in-out forwards;
+  animation:nevoaMagica 2.2s ease-in-out forwards;
 }
 
-@keyframes ondaMagica{
+@keyframes nevoaMagica{
   0%{
     opacity:0;
-    transform:scale(.05);
+    transform:scale(.85);
+    filter:blur(65px);
   }
-  25%{
+
+  35%{
     opacity:1;
+    transform:scale(1.15);
+    filter:blur(75px);
   }
-  75%{
-    opacity:1;
+
+  70%{
+    opacity:.85;
+    transform:scale(1.4);
+    filter:blur(90px);
   }
+
   100%{
     opacity:0;
-    transform:scale(2.8);
+    transform:scale(1.7);
+    filter:blur(110px);
   }
 }
 
-/* LIVRO GANHA BRILHO E SE APROXIMA */
+/* LIVRO COM BRILHO DELICADO */
 
 body.magic-transition .floating-book{
-  animation:livroEncantado 1.2s ease-in forwards;
+  animation:livroEncantado 1.5s ease-in forwards;
 }
 
 @keyframes livroEncantado{
   0%{
     transform:translate(-50%,-50%) scale(1) rotate(0deg);
-    filter:brightness(1);
+    filter:brightness(1)
+      drop-shadow(0 0 10px rgba(255,190,245,.8));
   }
-  45%{
-    transform:translate(-50%,-50%) scale(1.18) rotate(-5deg);
-    filter:brightness(1.8)
-      drop-shadow(0 0 30px rgba(255,190,245,1));
+
+  50%{
+    transform:translate(-50%,-50%) scale(1.08) rotate(-2deg);
+    filter:brightness(1.3)
+      drop-shadow(0 0 25px rgba(255,190,245,.9));
   }
+
   100%{
-    transform:translate(-50%,-50%) scale(1.35) rotate(5deg);
-    filter:brightness(2.2)
-      drop-shadow(0 0 45px rgba(255,190,245,1));
+    transform:translate(-50%,-50%) scale(1.12) rotate(2deg);
+    filter:brightness(1.5)
+      drop-shadow(0 0 35px rgba(255,190,245,.7));
   }
 }
 
@@ -283,7 +298,7 @@ body:not(.opened) .music-button{
   background-repeat:no-repeat;
   opacity:0;
   visibility:hidden;
-  transition:opacity 1.3s ease, visibility 1.3s ease;
+  transition:opacity 1.8s ease, visibility 1.8s ease;
 }
 
 body.opened .scene{
@@ -315,15 +330,16 @@ main{
 }
 
 body.opened main{
-  animation:showLetter 1.5s ease both;
+  animation:showLetter 1.8s ease both;
 }
 
 @keyframes showLetter{
   from{
     opacity:0;
-    transform:translateY(22px);
-    filter:blur(8px);
+    transform:translateY(18px);
+    filter:blur(10px);
   }
+
   to{
     opacity:1;
     transform:translateY(0);
@@ -543,7 +559,7 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
 
 <script>
 
-/* ABRIR A CARTA COM TRANSIÇÃO MÁGICA */
+/* ABRIR A CARTA COM TRANSIÇÃO SUAVE */
 
 const openLetterButton =
   document.getElementById('openLetterButton');
@@ -557,7 +573,7 @@ openLetterButton.addEventListener('click',()=>{
 
   setTimeout(()=>{
     document.body.classList.add('opened');
-  },1100);
+  },1500);
 });
 
 /* MÚSICA */
