@@ -7,7 +7,12 @@
 <title>Happy Birthday</title>
 
 <style>
-:root{--panel:rgba(7,13,30,.72);--accent:#ff8bd7;--text:#fff}
+:root{
+  --panel:rgba(7,13,30,.72);
+  --accent:#ff8bd7;
+  --text:#fff
+}
+
 *{box-sizing:border-box}
 
 html,body{
@@ -22,7 +27,7 @@ body{
   overflow-x:hidden
 }
 
-/* CENÁRIO COM A IMAGEM ARTE.PNG */
+/* CENÁRIO */
 .scene{
   position:fixed;
   inset:0;
@@ -91,75 +96,31 @@ p{white-space:pre-wrap}
   font-style:italic
 }
 
-/* CONTROLES */
-.tools{
+/* BOTÃO DA MÚSICA */
+.music-button{
   position:fixed;
-  z-index:3;
-  left:14px;
-  bottom:14px;
-  max-width:min(330px,calc(100vw - 28px));
-  background:rgba(4,10,24,.8);
-  border:1px solid #ffffff35;
-  border-radius:14px;
-  padding:12px;
-  color:white;
-  font:13px system-ui,sans-serif;
-  backdrop-filter:blur(8px)
-}
-
-.tools summary{
+  z-index:4;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  padding:12px 22px;
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:30px;
+  background:rgba(7,13,30,.85);
+  color:#ffd9f3;
+  font:14px system-ui,sans-serif;
   cursor:pointer;
-  font-weight:700
+  box-shadow:0 5px 20px #0006;
+  backdrop-filter:blur(8px);
+  transition:background .2s,transform .2s
 }
 
-.controls{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:10px
+.music-button:hover{
+  background:rgba(35,20,55,.95);
 }
 
-label{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  color:#f7e9f4
-}
-
-input,textarea{
-  max-width:100%;
-  font:inherit
-}
-
-input[type=color]{
-  width:100%;
-  height:30px;
-  border:0;
-  background:transparent
-}
-
-textarea{
-  width:100%;
-  min-height:85px;
-  margin-top:8px;
-  border-radius:8px;
-  padding:8px;
-  background:#101b31;
-  color:white;
-  border:1px solid #ffffff40
-}
-
-.audio{
-  display:block;
-  margin-top:8px;
-  width:100%;
-  font-size:11px
-}
-
-.hint{
-  font:11px/1.45 system-ui,sans-serif;
-  color:#e7dce9;
-  margin-top:8px
+.music-button:active{
+  transform:translateX(-50%) scale(.97);
 }
 
 /* CELULAR */
@@ -168,17 +129,18 @@ textarea{
     justify-content:center;
     align-items:flex-end;
     padding:12px;
-    padding-bottom:145px
+    padding-bottom:100px
   }
 
   .letter{max-height:65vh}
 
-  .tools{
-    max-height:120px;
-    overflow:auto
-  }
-
   .scene{background-position:58% center}
+
+  .music-button{
+    bottom:18px;
+    font-size:13px;
+    padding:11px 19px
+  }
 }
 </style>
 </head>
@@ -210,84 +172,35 @@ Com carinho,
 </section>
 </main>
 
-<details class="tools">
+<!-- MÚSICA ESCOLHIDA POR VOCÊ -->
+<audio id="musicPlayer" src="./music.mp3" loop preload="auto"></audio>
 
-<summary>Personalizar nosso cantinho</summary>
-
-<div class="hint">
-As roupas dos personagens no fundo já estão brancas. Aqui você pode ajustar o tom de cor da página e trocar os áudios.
-</div>
-
-<div class="controls">
-<label>Cor dos detalhes
-<input type="color" value="#ff8bd7" id="accent">
-</label>
-
-<label>Fundo do texto
-<input type="color" value="#071326" id="panel">
-</label>
-</div>
-
-<label style="display:block;margin-top:9px">
-Editar a cartinha
-<textarea id="editor"></textarea>
-</label>
-
-<label class="audio">Sua narração (áudio)
-<input type="file" id="voice" accept="audio/*">
-</label>
-
-<label class="audio">Música de fundo
-<input type="file" id="music" accept="audio/*">
-</label>
-
-<div class="hint">
-Os áudios escolhidos aqui tocam neste navegador. Para o site publicado, inclua os arquivos de áudio junto do HTML no GitHub.
-</div>
-
-</details>
-
-<audio id="voicePlayer" controls hidden></audio>
-<audio id="musicPlayer" loop></audio>
+<button class="music-button" id="musicButton" type="button">
+  ♫ Tocar nossa música
+</button>
 
 <script>
-const editor=document.getElementById('editor');
+const musicPlayer=document.getElementById('musicPlayer');
+const musicButton=document.getElementById('musicButton');
 
-editor.value=document.getElementById('letterText').innerText;
-
-editor.addEventListener('input',()=>{
-  document.getElementById('letterText').innerText=editor.value;
-});
-
-document.getElementById('accent').addEventListener('input',e=>{
-  document.documentElement.style.setProperty('--accent',e.target.value);
-});
-
-document.getElementById('panel').addEventListener('input',e=>{
-  document.documentElement.style.setProperty('--panel',e.target.value+'bb');
-});
-
-function loadAudio(inputId,playerId,showControls){
-  const input=document.getElementById(inputId);
-  const player=document.getElementById(playerId);
-
-  input.addEventListener('change',()=>{
-    if(input.files[0]){
-      player.src=URL.createObjectURL(input.files[0]);
-      player.hidden=!showControls;
-      player.controls=showControls;
-
-      if(inputId==='music'){
-        player.play().catch(()=>{});
-      }
+musicButton.addEventListener('click',async()=>{
+  if(musicPlayer.paused){
+    try{
+      await musicPlayer.play();
+      musicButton.textContent='♫ Pausar nossa música';
+    }catch(error){
+      musicButton.textContent='Tente tocar novamente';
     }
-  });
-}
+  }else{
+    musicPlayer.pause();
+    musicButton.textContent='♫ Tocar nossa música';
+  }
+});
 
-loadAudio('voice','voicePlayer',true);
-loadAudio('music','musicPlayer',false);
+musicPlayer.addEventListener('ended',()=>{
+  musicButton.textContent='♫ Tocar nossa música';
+});
 </script>
 
 </body>
 </html>
-
