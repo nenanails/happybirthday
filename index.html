@@ -56,7 +56,6 @@ body{
   height:200px;
   transform:translate(-50%,-50%);
   border-radius:60%;
-
   background:radial-gradient(
     ellipse,
     rgba(255,190,245,.65) 0%,
@@ -64,11 +63,9 @@ body{
     rgba(170,120,255,.22) 55%,
     transparent 75%
   );
-
   filter:blur(24px);
   mix-blend-mode:screen;
   pointer-events:none;
-
   animation:magiaLivro 3s ease-in-out infinite;
 }
 
@@ -77,20 +74,15 @@ body{
 .floating-book{
   position:absolute;
   z-index:2;
-
   width:clamp(120px, 17vw, 220px);
   height:auto;
-
   left:50%;
   top:42%;
-
   object-fit:contain;
   pointer-events:none;
-
   filter:
     drop-shadow(0 0 10px rgba(255,190,245,.8))
     drop-shadow(0 0 22px rgba(190,130,255,.55));
-
   animation:livroFlutuando 3.5s ease-in-out infinite;
 }
 
@@ -98,13 +90,12 @@ body{
   0%,100%{
     transform:translate(-50%,-50%) translateY(0) rotate(-3deg);
   }
-
   50%{
     transform:translate(-50%,-50%) translateY(-16px) rotate(3deg);
   }
 }
 
-/* Pequenos pontos de luz */
+/* PEQUENOS PONTOS DE LUZ */
 
 .book-glow::before,
 .book-glow::after{
@@ -127,7 +118,7 @@ body{
   filter:blur(1px);
 }
 
-/* Pulsação da aura */
+/* PULSAÇÃO DA AURA */
 
 @keyframes magiaLivro{
   0%,100%{
@@ -135,7 +126,6 @@ body{
     transform:translate(-50%,-50%) scale(.8);
     filter:blur(28px);
   }
-
   50%{
     opacity:1;
     transform:translate(-50%,-50%) scale(1.25);
@@ -143,21 +133,87 @@ body{
   }
 }
 
-/* Cintilação das partículas */
+/* CINTILAÇÃO DAS PARTÍCULAS */
 
 @keyframes particulas{
   0%,100%{
     opacity:.2;
     transform:scale(.8) rotate(0deg);
   }
-
   50%{
     opacity:1;
     transform:scale(1.15) rotate(15deg);
   }
 }
 
-/* Área clicável sobre o botão da imagem */
+/* =================================
+   TRANSIÇÃO MÁGICA
+================================= */
+
+.magic-flash{
+  position:absolute;
+  inset:0;
+  z-index:8;
+  pointer-events:none;
+  opacity:0;
+  transform:scale(.05);
+
+  background:radial-gradient(
+    circle at 50% 42%,
+    rgba(255,255,255,1) 0%,
+    rgba(255,210,247,.95) 12%,
+    rgba(255,139,215,.8) 28%,
+    rgba(190,130,255,.65) 48%,
+    rgba(90,70,160,.25) 70%,
+    transparent 100%
+  );
+}
+
+body.magic-transition .magic-flash{
+  animation:ondaMagica 1.5s ease-in-out forwards;
+}
+
+@keyframes ondaMagica{
+  0%{
+    opacity:0;
+    transform:scale(.05);
+  }
+  25%{
+    opacity:1;
+  }
+  75%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:scale(2.8);
+  }
+}
+
+/* LIVRO GANHA BRILHO E SE APROXIMA */
+
+body.magic-transition .floating-book{
+  animation:livroEncantado 1.2s ease-in forwards;
+}
+
+@keyframes livroEncantado{
+  0%{
+    transform:translate(-50%,-50%) scale(1) rotate(0deg);
+    filter:brightness(1);
+  }
+  45%{
+    transform:translate(-50%,-50%) scale(1.18) rotate(-5deg);
+    filter:brightness(1.8)
+      drop-shadow(0 0 30px rgba(255,190,245,1));
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(1.35) rotate(5deg);
+    filter:brightness(2.2)
+      drop-shadow(0 0 45px rgba(255,190,245,1));
+  }
+}
+
+/* BOTÃO DE ABERTURA */
 
 .open-button{
   position:absolute;
@@ -174,7 +230,7 @@ body{
   outline-offset:5px;
 }
 
-/* Frase de orientação */
+/* FRASE DE ORIENTAÇÃO */
 
 .continue-text{
   position:absolute;
@@ -194,16 +250,11 @@ body{
 }
 
 @keyframes brilhoTexto{
-  0%,100%{
-    opacity:1;
-  }
-
-  50%{
-    opacity:.25;
-  }
+  0%,100%{opacity:1;}
+  50%{opacity:.25;}
 }
 
-/* Quando abrir a surpresa */
+/* SAÍDA DA PRIMEIRA TELA */
 
 body.opened #intro{
   opacity:0;
@@ -211,7 +262,8 @@ body.opened #intro{
   pointer-events:none;
 }
 
-body:not(.opened) .scene,
+/* ESCONDER CARTA E MÚSICA ANTES DA ABERTURA */
+
 body:not(.opened) main,
 body:not(.opened) .music-button{
   display:none;
@@ -229,6 +281,14 @@ body:not(.opened) .music-button{
   background-position:center center;
   background-size:cover;
   background-repeat:no-repeat;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity 1.3s ease, visibility 1.3s ease;
+}
+
+body.opened .scene{
+  opacity:1;
+  visibility:visible;
 }
 
 .scene:after{
@@ -252,18 +312,22 @@ main{
   align-items:center;
   justify-content:flex-end;
   padding:clamp(16px,4vw,56px);
-  animation:showLetter 1.1s ease both;
+}
+
+body.opened main{
+  animation:showLetter 1.5s ease both;
 }
 
 @keyframes showLetter{
   from{
     opacity:0;
-    transform:translateY(15px);
+    transform:translateY(22px);
+    filter:blur(8px);
   }
-
   to{
     opacity:1;
     transform:translateY(0);
+    filter:blur(0);
   }
 }
 
@@ -350,11 +414,11 @@ p{white-space:pre-wrap}
     width:150px;
     height:150px;
     top:32%;
-    
+  }
+
   .floating-book{
-  width:120px;
-  top:32%;
-}
+    width:120px;
+    top:32%;
   }
 
   .continue-text{
@@ -391,10 +455,12 @@ p{white-space:pre-wrap}
 <body>
 
 <!-- PRIMEIRA TELA -->
-  
+
 <section id="intro" aria-label="Tela de abertura">
 
   <div class="book-glow"></div>
+
+  <div class="magic-flash"></div>
 
   <img
     src="./livroo.png"
@@ -477,13 +543,21 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
 
 <script>
 
-/* ABRIR A CARTA */
+/* ABRIR A CARTA COM TRANSIÇÃO MÁGICA */
 
 const openLetterButton =
   document.getElementById('openLetterButton');
 
 openLetterButton.addEventListener('click',()=>{
-  document.body.classList.add('opened');
+  if(document.body.classList.contains('magic-transition')) return;
+
+  openLetterButton.disabled=true;
+
+  document.body.classList.add('magic-transition');
+
+  setTimeout(()=>{
+    document.body.classList.add('opened');
+  },1100);
 });
 
 /* MÚSICA */
