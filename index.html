@@ -543,7 +543,6 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
 
 <!-- ÁUDIOS -->
 
-<!-- Música da tela inicial -->
 <audio
   id="introMusic"
   src="./music1.m4a"
@@ -551,14 +550,12 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
   preload="auto">
 </audio>
 
-<!-- Efeito sonoro do botão -->
 <audio
   id="clickSound"
   src="./click.m4a"
   preload="auto">
 </audio>
 
-<!-- Música da carta -->
 <audio
   id="musicPlayer"
   src="./music.mp3"
@@ -624,52 +621,92 @@ const INTRO_VOLUME=0.25;
 
 introMusic.volume=0;
 
+let introStarted=false;
+let introBlocked=false;
+
 async function startIntroMusic(){
 
   if(
+    introStarted ||
+    document.hidden ||
     document.body.classList.contains('opened') ||
-    document.body.classList.contains('magic-transition') ||
-    !introMusic.paused
+    document.body.classList.contains('magic-transition')
   ){
     return;
   }
 
   try{
-    introMusic.volume=0;
+
     await introMusic.play();
+
+    introStarted=true;
+    introBlocked=false;
 
     fadeAudio(
       introMusic,
       INTRO_VOLUME,
-      1800
+      2200
     );
 
   }catch(error){
-    /* O navegador pode bloquear a reprodução automática.
-       Nesse caso, a música tentará iniciar novamente
-       quando houver uma interação permitida. */
+
+    introBlocked=true;
+
+    console.log(
+      'O navegador bloqueou a reprodução automática. Aguardando interação.',
+      error
+    );
+
   }
 }
 
-/* TENTAR TOCAR ASSIM QUE O SITE CARREGAR */
+/* TENTAR AUTOMATICAMENTE AO CARREGAR */
 
 window.addEventListener('load',()=>{
   startIntroMusic();
 });
 
-/* PAUSAR COM SAÍDA SUAVE AO TROCAR DE ABA */
+/* TENTAR NOVAMENTE NA PRIMEIRA INTERAÇÃO */
+
+function unlockIntroMusic(){
+
+  if(
+    !introStarted &&
+    !document.body.classList.contains('magic-transition') &&
+    !document.body.classList.contains('opened')
+  ){
+    startIntroMusic();
+  }
+}
+
+document.addEventListener(
+  'pointerdown',
+  unlockIntroMusic,
+  {once:true}
+);
+
+document.addEventListener(
+  'keydown',
+  unlockIntroMusic,
+  {once:true}
+);
+
+/* PAUSAR AO TROCAR DE ABA E RETOMAR AO VOLTAR */
 
 document.addEventListener('visibilitychange',()=>{
 
   if(document.hidden){
 
     if(!introMusic.paused){
+
       fadeAudio(
         introMusic,
         0,
-        1000,
+        1200,
         true
       );
+
+      introStarted=false;
     }
 
   }else{
@@ -682,6 +719,7 @@ document.addEventListener('visibilitychange',()=>{
     }
 
   }
+
 });
 
 /* =================================
@@ -702,7 +740,7 @@ openLetterButton.addEventListener('click',()=>{
 
   openLetterButton.disabled=true;
 
-  /* TOCAR O EFEITO SONORO DO CLIQUE */
+  /* EFEITO SONORO DO CLIQUE */
 
   clickSound.currentTime=0;
   clickSound.volume=1;
@@ -711,7 +749,7 @@ openLetterButton.addEventListener('click',()=>{
     console.log('Não foi possível reproduzir o efeito sonoro.',error);
   });
 
-  /* DIMINUIR A MÚSICA DA ABERTURA */
+  /* FADE-OUT DA MÚSICA DE ENTRADA */
 
   fadeAudio(
     introMusic,
@@ -720,7 +758,9 @@ openLetterButton.addEventListener('click',()=>{
     true
   );
 
-  /* INICIAR A TRANSIÇÃO MÁGICA */
+  introStarted=false;
+
+  /* TRANSIÇÃO MÁGICA */
 
   document.body.classList.add('magic-transition');
 
