@@ -381,7 +381,7 @@ p{white-space:pre-wrap}
 }
 
 /* =================================
-   BOTÃO DA MÚSICA
+   BOTÃO DA MÚSICA DA CARTA
 ================================= */
 
 .music-button{
@@ -541,8 +541,24 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
 </section>
 </main>
 
-<!-- MÚSICA -->
+<!-- ÁUDIOS -->
 
+<!-- Música da tela inicial -->
+<audio
+  id="introMusic"
+  src="./music1.m4a"
+  loop
+  preload="auto">
+</audio>
+
+<!-- Efeito sonoro do botão -->
+<audio
+  id="clickSound"
+  src="./click.m4a"
+  preload="auto">
+</audio>
+
+<!-- Música da carta -->
 <audio
   id="musicPlayer"
   src="./music.mp3"
@@ -559,45 +575,192 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
 
 <script>
 
-/* ABRIR A CARTA COM TRANSIÇÃO SUAVE */
+/* =================================
+   CONTROLE DE VOLUME SUAVE
+================================= */
 
-const openLetterButton =
+function fadeAudio(audio,targetVolume,duration,pauseAtEnd=false){
+
+  if(audio.fadeFrame){
+    cancelAnimationFrame(audio.fadeFrame);
+  }
+
+  const startVolume=audio.volume;
+  const difference=targetVolume-startVolume;
+  const startTime=performance.now();
+
+  function animate(currentTime){
+
+    const elapsed=currentTime-startTime;
+    const progress=Math.min(elapsed/duration,1);
+
+    audio.volume=Math.max(
+      0,
+      Math.min(1,startVolume+difference*progress)
+    );
+
+    if(progress<1){
+      audio.fadeFrame=requestAnimationFrame(animate);
+    }else{
+      audio.fadeFrame=null;
+
+      if(pauseAtEnd){
+        audio.pause();
+      }
+    }
+  }
+
+  audio.fadeFrame=requestAnimationFrame(animate);
+}
+
+/* =================================
+   MÚSICA DA TELA INICIAL
+================================= */
+
+const introMusic=document.getElementById('introMusic');
+const clickSound=document.getElementById('clickSound');
+
+const INTRO_VOLUME=0.25;
+
+introMusic.volume=0;
+
+async function startIntroMusic(){
+
+  if(
+    document.body.classList.contains('opened') ||
+    document.body.classList.contains('magic-transition') ||
+    !introMusic.paused
+  ){
+    return;
+  }
+
+  try{
+    introMusic.volume=0;
+    await introMusic.play();
+
+    fadeAudio(
+      introMusic,
+      INTRO_VOLUME,
+      1800
+    );
+
+  }catch(error){
+    /* O navegador pode bloquear a reprodução automática.
+       Nesse caso, a música tentará iniciar novamente
+       quando houver uma interação permitida. */
+  }
+}
+
+/* TENTAR TOCAR ASSIM QUE O SITE CARREGAR */
+
+window.addEventListener('load',()=>{
+  startIntroMusic();
+});
+
+/* PAUSAR COM SAÍDA SUAVE AO TROCAR DE ABA */
+
+document.addEventListener('visibilitychange',()=>{
+
+  if(document.hidden){
+
+    if(!introMusic.paused){
+      fadeAudio(
+        introMusic,
+        0,
+        1000,
+        true
+      );
+    }
+
+  }else{
+
+    if(
+      !document.body.classList.contains('opened') &&
+      !document.body.classList.contains('magic-transition')
+    ){
+      startIntroMusic();
+    }
+
+  }
+});
+
+/* =================================
+   ABRIR A CARTA
+================================= */
+
+const openLetterButton=
   document.getElementById('openLetterButton');
 
 openLetterButton.addEventListener('click',()=>{
-  if(document.body.classList.contains('magic-transition')) return;
+
+  if(
+    document.body.classList.contains('magic-transition') ||
+    document.body.classList.contains('opened')
+  ){
+    return;
+  }
 
   openLetterButton.disabled=true;
+
+  /* TOCAR O EFEITO SONORO DO CLIQUE */
+
+  clickSound.currentTime=0;
+  clickSound.volume=1;
+
+  clickSound.play().catch(error=>{
+    console.log('Não foi possível reproduzir o efeito sonoro.',error);
+  });
+
+  /* DIMINUIR A MÚSICA DA ABERTURA */
+
+  fadeAudio(
+    introMusic,
+    0,
+    1200,
+    true
+  );
+
+  /* INICIAR A TRANSIÇÃO MÁGICA */
 
   document.body.classList.add('magic-transition');
 
   setTimeout(()=>{
     document.body.classList.add('opened');
   },1500);
+
 });
 
-/* MÚSICA */
+/* =================================
+   MÚSICA DA CARTA
+================================= */
 
-const musicPlayer =
+const musicPlayer=
   document.getElementById('musicPlayer');
 
-const musicButton =
+const musicButton=
   document.getElementById('musicButton');
 
 musicPlayer.volume=0.25;
 
 musicButton.addEventListener('click',async()=>{
+
   if(musicPlayer.paused){
+
     try{
       await musicPlayer.play();
       musicButton.textContent='♫ Pausar nossa música';
+
     }catch(error){
       musicButton.textContent='Tente tocar novamente';
     }
+
   }else{
+
     musicPlayer.pause();
     musicButton.textContent='♫ Tocar nossa música';
+
   }
+
 });
 
 musicPlayer.addEventListener('ended',()=>{
