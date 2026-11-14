@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -543,6 +542,7 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
 
 <!-- ÁUDIOS -->
 
+<!-- Música da tela inicial -->
 <audio
   id="introMusic"
   src="./music1.m4a"
@@ -550,12 +550,14 @@ Feliz aniversário, meu amor! Obrigada por existir e por fazer parte da minha vi
   preload="auto">
 </audio>
 
+<!-- Efeito sonoro do botão -->
 <audio
   id="clickSound"
   src="./click.m4a"
   preload="auto">
 </audio>
 
+<!-- Música da carta -->
 <audio
   id="musicPlayer"
   src="./music.mp3"
@@ -621,92 +623,52 @@ const INTRO_VOLUME=0.25;
 
 introMusic.volume=0;
 
-let introStarted=false;
-let introBlocked=false;
-
 async function startIntroMusic(){
 
   if(
-    introStarted ||
-    document.hidden ||
     document.body.classList.contains('opened') ||
-    document.body.classList.contains('magic-transition')
+    document.body.classList.contains('magic-transition') ||
+    !introMusic.paused
   ){
     return;
   }
 
   try{
-
+    introMusic.volume=0;
     await introMusic.play();
-
-    introStarted=true;
-    introBlocked=false;
 
     fadeAudio(
       introMusic,
       INTRO_VOLUME,
-      2200
+      1800
     );
 
   }catch(error){
-
-    introBlocked=true;
-
-    console.log(
-      'O navegador bloqueou a reprodução automática. Aguardando interação.',
-      error
-    );
-
+    /* O navegador pode bloquear a reprodução automática.
+       Nesse caso, a música tentará iniciar novamente
+       quando houver uma interação permitida. */
   }
 }
 
-/* TENTAR AUTOMATICAMENTE AO CARREGAR */
+/* TENTAR TOCAR ASSIM QUE O SITE CARREGAR */
 
 window.addEventListener('load',()=>{
   startIntroMusic();
 });
 
-/* TENTAR NOVAMENTE NA PRIMEIRA INTERAÇÃO */
-
-function unlockIntroMusic(){
-
-  if(
-    !introStarted &&
-    !document.body.classList.contains('magic-transition') &&
-    !document.body.classList.contains('opened')
-  ){
-    startIntroMusic();
-  }
-}
-
-document.addEventListener(
-  'pointerdown',
-  unlockIntroMusic,
-  {once:true}
-);
-
-document.addEventListener(
-  'keydown',
-  unlockIntroMusic,
-  {once:true}
-);
-
-/* PAUSAR AO TROCAR DE ABA E RETOMAR AO VOLTAR */
+/* PAUSAR COM SAÍDA SUAVE AO TROCAR DE ABA */
 
 document.addEventListener('visibilitychange',()=>{
 
   if(document.hidden){
 
     if(!introMusic.paused){
-
       fadeAudio(
         introMusic,
         0,
-        1200,
+        1000,
         true
       );
-
-      introStarted=false;
     }
 
   }else{
@@ -719,7 +681,6 @@ document.addEventListener('visibilitychange',()=>{
     }
 
   }
-
 });
 
 /* =================================
@@ -740,7 +701,7 @@ openLetterButton.addEventListener('click',()=>{
 
   openLetterButton.disabled=true;
 
-  /* EFEITO SONORO DO CLIQUE */
+  /* TOCAR O EFEITO SONORO DO CLIQUE */
 
   clickSound.currentTime=0;
   clickSound.volume=1;
@@ -749,7 +710,7 @@ openLetterButton.addEventListener('click',()=>{
     console.log('Não foi possível reproduzir o efeito sonoro.',error);
   });
 
-  /* FADE-OUT DA MÚSICA DE ENTRADA */
+  /* DIMINUIR A MÚSICA DA ABERTURA */
 
   fadeAudio(
     introMusic,
@@ -758,9 +719,7 @@ openLetterButton.addEventListener('click',()=>{
     true
   );
 
-  introStarted=false;
-
-  /* TRANSIÇÃO MÁGICA */
+  /* INICIAR A TRANSIÇÃO MÁGICA */
 
   document.body.classList.add('magic-transition');
 
