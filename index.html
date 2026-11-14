@@ -226,26 +226,27 @@ body.magic-transition .floating-book{
 
 #enableSoundButton{
   position:absolute;
-  z-index:5;
-  left:50%;
-  bottom:10%;
-  transform:translateX(-50%);
-  padding:10px 20px;
-  border:1px solid rgba(255,255,255,.6);
+  z-index:20;
+  top:22px;
+  left:22px;
+  padding:11px 19px;
+  border:1px solid rgba(255,255,255,.65);
   border-radius:30px;
-  background:rgba(7,13,30,.75);
+  background:rgba(7,13,30,.82);
   color:white;
   font:13px system-ui,sans-serif;
   cursor:pointer;
   backdrop-filter:blur(8px);
-  opacity:0;
-  visibility:hidden;
-  transition:opacity .5s ease, visibility .5s ease;
-}
-
-#enableSoundButton.visible{
+  box-shadow:0 4px 18px rgba(0,0,0,.35);
   opacity:1;
   visibility:visible;
+  transition:opacity .6s ease,visibility .6s ease;
+}
+
+#enableSoundButton.hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
 }
 
 /* FRASE DE ORIENTAÇÃO */
@@ -437,7 +438,10 @@ p{white-space:pre-wrap}
   }
 
   #enableSoundButton{
-    bottom:10%;
+    top:14px;
+    left:14px;
+    padding:9px 15px;
+    font-size:12px;
   }
 
   main{
@@ -646,7 +650,7 @@ async function startIntroMusic(){
     }
 
     fadeAudio(introMusic,INTRO_VOLUME,1800);
-    enableSoundButton.classList.remove('visible');
+    enableSoundButton.classList.add('hidden');
     return;
   }
 
@@ -662,11 +666,11 @@ async function startIntroMusic(){
       1800
     );
 
-    enableSoundButton.classList.remove('visible');
+    enableSoundButton.classList.add('hidden');
 
   }catch(error){
 
-    enableSoundButton.classList.add('visible');
+    enableSoundButton.classList.remove('hidden');
 
     console.log(
       'O navegador bloqueou a reprodução automática.',
@@ -684,26 +688,8 @@ window.addEventListener('load',()=>{
 
 /* BOTÃO PARA LIBERAR A MÚSICA */
 
-enableSoundButton.addEventListener('click',async()=>{
-
-  try{
-
-    await introMusic.play();
-
-    fadeAudio(
-      introMusic,
-      INTRO_VOLUME,
-      1800
-    );
-
-    enableSoundButton.classList.remove('visible');
-
-  }catch(error){
-
-    console.log('Não foi possível iniciar a música.',error);
-
-  }
-
+enableSoundButton.addEventListener('click',()=>{
+  startIntroMusic();
 });
 
 /* PAUSAR E RETOMAR AO TROCAR DE ABA */
@@ -794,7 +780,7 @@ openLetterButton.addEventListener('click',()=>{
     true
   );
 
-  enableSoundButton.classList.remove('visible');
+  enableSoundButton.classList.add('hidden');
 
   /* TRANSIÇÃO MÁGICA */
 
